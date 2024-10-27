@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Game.Domain
 {
     public class GameEntity
     {
+        [BsonElement]
         private readonly List<Player> players;
 
         public GameEntity(int turnsCount)
@@ -13,6 +15,7 @@ namespace Game.Domain
         {
         }
 
+        [BsonConstructor] 
         public GameEntity(Guid id, GameStatus status, int turnsCount, int currentTurnIndex, List<Player> players)
         {
             Id = id;
@@ -22,6 +25,7 @@ namespace Game.Domain
             this.players = players;
         }
 
+        [BsonElement]
         public Guid Id
         {
             get;
@@ -29,12 +33,16 @@ namespace Game.Domain
             private set;
         }
 
+        [BsonElement]
         public IReadOnlyList<Player> Players => players.AsReadOnly();
 
+        [BsonElement]
         public int TurnsCount { get; }
 
+        [BsonElement] 
         public int CurrentTurnIndex { get; private set; }
 
+        [BsonElement] 
         public GameStatus Status { get; private set; }
 
         public void AddPlayer(UserEntity user)
@@ -59,6 +67,7 @@ namespace Game.Domain
                 Status = GameStatus.Canceled;
         }
 
+        [BsonElement] 
         public bool HaveDecisionOfEveryPlayer => Players.All(p => p.Decision.HasValue);
 
         public void SetPlayerDecision(Guid userId, PlayerDecision decision)
